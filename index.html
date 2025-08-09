@@ -8,36 +8,18 @@
 <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-  <!-- Background image: place background.jpg in repo root or upload via UI -->
   <div id="bg-wrapper" style="background-image:url('./background.jpg'); background-size:cover; background-position:center;"></div>
 
   <main id="intro" class="center">
     <div class="card transparent">
       <img id="coverFlower" src="./flower.png" alt="彼岸花" class="cover" />
       <h1>给 <span class="name">雨汐</span></h1>
-      <p class="lead">点花瓣，让我为你说一句——你是我的唯一。</p>
+      <p class="lead">点我进入表白页面 — 你是我的唯一。</p>
 
       <div class="controls">
-        <button id="startBtn" class="btn primary">打开表白页面</button>
-        <button id="skipBtn" class="btn">直接进入</button>
+        <button id="enterBtn" class="btn primary">进入表白</button>
       </div>
-
-      <div class="settings transparent">
-        <label>背景图片（放入仓库并填写文件名，或上传本地）</label>
-        <div class="row">
-          <input id="bgPath" type="text" placeholder="例如 background.jpg（放在仓库根目录）" />
-          <button id="useBgFile" class="btn">使用此背景</button>
-          <input id="bgUpload" type="file" accept="image/*" />
-        </div>
-
-        <label>歌词文件（LRC）或填入仓库歌词文件名（可选）</label>
-        <div class="row">
-          <input id="lrcPath" type="text" placeholder="例如 lyrics.lrc（放在仓库根目录）" />
-          <button id="useLrcPath" class="btn">加载歌词文件</button>
-          <input id="lrcUpload" type="file" accept=".lrc,text/plain" />
-        </div>
-      </div>
-
+      <p class="tip">说明：把文件按以下文件名上传到仓库根目录（background.jpg, music.mp3, lyrics.lrc），页面会自动使用它们。</p>
     </div>
   </main>
 
@@ -51,20 +33,15 @@
         <div class="music-area">
           <audio id="audio" preload="auto" controls></audio>
           <div class="music-controls">
-            <input id="musicName" placeholder="音乐文件名（示例：music.mp3 或 music.flac）" />
-            <button id="loadMusic" class="btn">加载音乐</button>
             <button id="togglePlay" class="btn primary">播放/暂停</button>
           </div>
+
           <div class="lyrics-box"><div id="lyrics" class="lyrics"></div></div>
         </div>
       </div>
 
       <div class="album">
-        <h3>回忆相册（会话预览）</h3>
-        <div class="album-controls">
-          <input id="photoUpload" type="file" accept="image/*" multiple />
-          <button id="addFromRepo" class="btn">从仓库引用图片</button>
-        </div>
+        <h3>回忆相册（会话预览，上传至仓库后可通过在 repo 放图片直接显示）</h3>
         <div id="thumbs" class="thumbs"></div>
       </div>
 
