@@ -120,3 +120,69 @@ function showNotice(msg, tm=3000){ let el = document.getElementById('_notice_');
 // auto-detect music in advance
 fetch('./music.mp3').then(r=>{ if(r.ok) audio.src='./music.mp3'; }).catch(()=>{});
 fetch('./music.flac').then(r=>{ if(r.ok && !audio.src) audio.src='./music.flac'; }).catch(()=>{});
+
+
+/* --- appended improvements --- */
+
+/* ===== Lyrics auto-scroll improvements and transparency handling ===== */
+
+// Auto-scroll behavior enhancements:
+// - Do not force-scroll if user is interacting with the lyrics container (manual scroll or touch)
+// - When user scrolls, pause auto-scrolling for a timeout (8s). After timeout, auto-scroll resumes.
+// - Use scrollIntoView({block: "center", behavior:"smooth"}) to keep current line centered.
+// - Only scroll when the active index changes to avoid jitter.
+
+let userInteracted = false;
+let userScrollTimeout = null;
+let lastLyricIndex = -1;
+
+// Detect user scroll/touch on lyrics container and pause auto-scrolling temporarily
+if (typeof lyricsContainer !== 'undefined' && lyricsContainer) {
+  lyricsContainer.addEventListener('wheel', () => {
+    userInteracted = true;
+    clearTimeout(userScrollTimeout);
+    userScrollTimeout = setTimeout(()=> { userInteracted = false; }, 8000);
+  }, {passive:true});
+  lyricsContainer.addEventListener('touchstart', () => {
+    userInteracted = true;
+    clearTimeout(userScrollTimeout);
+    userScrollTimeout = setTimeout(()=> { userInteracted = false; }, 8000);
+  }, {passive:true});
+  lyricsContainer.addEventListener('scroll', () => {
+    // mark that user has interacted; scroll events from programmatic scrolling will also fire but we only set flag
+    userInteracted = true;
+    clearTimeout(userScrollTimeout);
+    userScrollTimeout = setTimeout(()=> { userInteracted = false; }, 8000);
+  }, {passive:true});
+}
+
+// Improved audio timeupdate: only act if lyric index changed and user has not recently interacted
+audio.addEventListener('timeupdate', ()=>{
+  if(!lrcLines || !lrcLines.length) return;
+  const cur = audio.currentTime * 1000;
+  let idx = -1;
+  for(let i=0;i<lrcLines.length;i++){
+    if(cur >= lrcLines[i].time) idx = i; else break;
+  }
+  if(idx === -1) return;
+  // if index changed, update highlight and possibly auto-scroll
+  if(idx !== lastLyricIndex){
+    lastLyricIndex = idx;
+    const nodes = lyricsContainer.querySelectorAll('.line');
+    nodes.forEach((n,i)=> n.classList.toggle('active', i === idx));
+    if(!userInteracted){
+      // Safely scroll the active line into center view
+      const el = nodes[idx];
+      if(el && typeof el.scrollIntoView === 'function'){
+        try{
+          el.scrollIntoView({behavior: 'smooth', block: 'center'});
+        }catch(e){
+          // fallback
+          const container = lyricsContainer;
+          const top = el.offsetTop - container.clientHeight/2 + el.clientHeight/2;
+          container.scrollTop = top;
+        }
+      }
+    }
+  }
+});
