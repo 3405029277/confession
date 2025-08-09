@@ -65,3 +65,34 @@ html,body{height:100%;margin:0;background:transparent;color:var(--text)}
   .player-panel{width:100%; margin-top:12px; z-index:5 }
   .lyrics-box{height:220px}
 }
+
+
+/* Visibility fix appended */
+
+/* Ensure gradient applies to each line and child elements */
+.poem {
+  background: linear-gradient(90deg, #ff4d6d 0%, #ff7aa3 18%, #ffd86b 38%, #8ee37a 58%, #6dd3ff 78%, #b98bff 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  color: transparent !important;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* Apply same clipping to each line so per-line text is visible even when adding text nodes */
+.poem-line {
+  background: linear-gradient(90deg, #ff4d6d 0%, #ff7aa3 18%, #ffd86b 38%, #8ee37a 58%, #6dd3ff 78%, #b98bff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  /* keep reserved height and transitions */
+  width:100%; min-height:1.6em; opacity:0; transform:translateY(8px); display:block; margin:6px 0;
+}
+.poem-line.visible { opacity:1; transform:translateY(0); transition:opacity .36s ease, transform .36s ease; }
+
+/* Remove any .char styling which created separate inline elements */
+.poem-line .char { display:inline; }

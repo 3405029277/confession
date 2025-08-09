@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
       inner.textContent = '';
       for(let c=0;c<text.length;c++){
         const ch = document.createElement('span');
-        ch.className = 'char';
+        /* removed char span class to preserve gradient */
         ch.textContent = text[c];
         inner.appendChild(ch);
         await new Promise(r=>setTimeout(r, perChar));
