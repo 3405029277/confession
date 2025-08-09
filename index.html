@@ -1,53 +1,21 @@
 <!doctype html>
 <html lang="zh-CN">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>给韩雨汐 — 你是我的唯一</title>
-<link rel="icon" href="./favicon.ico" />
-<link rel="stylesheet" href="./style.css" />
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>给韩雨汐 — 入口</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- background wrapper shows background.jpg clearly -->
-  <div id="bg-wrapper" aria-hidden="true"></div>
-
-  <main id="intro" class="center" aria-label="intro">
-    <div class="card transparent" id="cardIntro" role="region">
-      <img id="coverFlower" src="./flower.png" alt="彼岸花" class="cover" />
-      <h1>给 <span class="name">雨汐</span></h1>
-      <p class="lead">点下方按钮，走进我的告白：你是我的唯一。</p>
+  <div id="bg" aria-hidden="true"></div>
+  <main class="center">
+    <div class="intro-card">
+      <img src="flower.png" alt="彼岸花" class="cover">
+      <h1>给 <span class="name">韩雨汐</span></h1>
+      <p class="lead">我为你做了一个页面，点下方按钮进入表白。</p>
       <div class="controls">
-        <button id="enterBtn" class="btn primary">进入表白</button>
+        <a class="btn primary" href="love.html">进入表白</a>
       </div>
-      <p class="tip">提示：把文件按文件名上传到仓库根目录（background.jpg, music.mp3, lyrics.lrc）。</p>
+      <p class="tip">部署说明：把 background.jpg、music.mp3、lyrics.lrc 放到仓库根目录（同名）即可。</p>
     </div>
   </main>
-
-  <section id="stage" class="hidden center" aria-label="stage">
-    <div class="panel transparent-panel" id="mainPanel" role="main">
-      <div class="top-row">
-        <div class="poem-area">
-          <div id="poem" class="poem"></div>
-        </div>
-
-        <div class="music-area">
-          <audio id="audio" preload="auto" controls></audio>
-          <div class="music-controls">
-            <button id="togglePlay" class="btn primary">播放/暂停</button>
-          </div>
-          <div class="lyrics-box"><div id="lyrics" class="lyrics" tabindex="0" aria-live="polite"></div></div>
-        </div>
-      </div>
-
-      <div class="album">
-        <h3 style="color:inherit">回忆相册（可在 repo 放 thumb1.jpg..thumb6.jpg 自动显示）</h3>
-        <div id="thumbs" class="thumbs"></div>
-      </div>
-
-      <footer class="foot">制作：你 · 真心永恒</footer>
-    </div>
-  </section>
-
-<script src="./script.js"></script>
 </body>
 </html>

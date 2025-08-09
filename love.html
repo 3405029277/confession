@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>给韩雨汐 — 我唯一的表白</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="bg" aria-hidden="true"></div>
+
+  <div class="overlay">
+    <header class="topbar">
+      <a href="index.html" class="back">← 返回</a>
+      <div class="title">给 韩雨汐</div>
+    </header>
+
+    <main class="stage center">
+      <section class="poem-panel">
+        <div id="poem" class="poem"></div>
+      </section>
+
+      <aside class="player-panel">
+        <div class="cover-row">
+          <img src="flower.png" class="cover small" alt="彼岸花">
+        </div>
+        <audio id="audio" controls preload="auto"></audio>
+        <div class="player-controls">
+          <button id="playBtn" class="btn primary">播放/暂停</button>
+        </div>
+        <div class="lyrics-box" id="lyricsBox">
+          <div id="lyrics" class="lyrics" tabindex="0" aria-live="polite"></div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="foot">制作：你 · 真心永恒</footer>
+  </div>
+
+<script src="script.js"></script>
+</body>
+</html>
