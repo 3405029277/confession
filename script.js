@@ -1,4 +1,4 @@
-// script.js - love page logic: poem typing (classical), lyrics sync (centered), auto-load assets
+// script.js - love page logic: rainbow poem typing and lyrics sync (centered)
 document.addEventListener('DOMContentLoaded', ()=>{
   const playBtn = document.getElementById('playBtn');
   const audio = document.getElementById('audio');
@@ -15,22 +15,36 @@ document.addEventListener('DOMContentLoaded', ()=>{
     "雨汐，汝是我唯一。"
   ];
 
-  // typing: reveal line-by-line with gentle effect
-  async function typePoem(lines, perChar=28){
+  // typing: line-by-line with reserved layout (chars appear in spans)
+  async function typePoemFixed(lines, perChar=26){
+    if(!poemEl) return;
     poemEl.innerHTML = '';
-    for(const line of lines){
-      const div = document.createElement('div');
-      div.className = 'poem-line';
-      poemEl.appendChild(div);
-      for(let i=0;i<line.length;i++){
-        div.textContent += line[i];
+    // pre-create line containers to reserve space
+    const lineEls = [];
+    for(let i=0;i<lines.length;i++){
+      const lineDiv = document.createElement('div');
+      lineDiv.className = 'poem-line';
+      const inner = document.createElement('span');
+      inner.className = 'poem-inner';
+      lineDiv.appendChild(inner);
+      poemEl.appendChild(lineDiv);
+      lineEls.push({lineDiv, inner});
+    }
+    // type into each inner span
+    for(let i=0;i<lines.length;i++){
+      const text = lines[i];
+      const {lineDiv, inner} = lineEls[i];
+      inner.textContent = '';
+      for(let c=0;c<text.length;c++){
+        const ch = document.createElement('span');
+        ch.className = 'char';
+        ch.textContent = text[c];
+        inner.appendChild(ch);
         await new Promise(r=>setTimeout(r, perChar));
       }
-      // fade in
-      div.style.opacity = 0; div.getBoundingClientRect();
-      div.style.transition = 'opacity 420ms ease, transform 420ms ease';
-      div.style.opacity = 1; div.style.transform = 'translateY(0)';
-      await new Promise(r=>setTimeout(r, 420+320));
+      // reveal line
+      lineDiv.classList.add('visible');
+      await new Promise(r=>setTimeout(r, 320));
     }
   }
 
@@ -39,7 +53,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     fetch('./music.mp3').then(r=>{ if(r.ok){ audio.src='./music.mp3'; } else { fetch('./music.flac').then(r2=>{ if(r2.ok) audio.src='./music.flac'; }); } }).catch(()=>{});
   }
 
-  // Parse LRC to array [{time, text}]
+  // Parse LRC and render
   function parseLRC(text){
     const lines = text.split(/\r?\n/);
     const res = [];
@@ -60,7 +74,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     return res;
   }
 
-  // render lyrics to DOM
   let lrcLines = [];
   function renderLyrics(lines){
     lyricsEl.innerHTML = '';
@@ -71,11 +84,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
       d.textContent = ln.text;
       lyricsEl.appendChild(d);
     });
-    // scroll to top initially
     lyricsBox.scrollTop = 0;
   }
 
-  // load lyrics.lrc if exists
   async function loadLyrics(){
     try{
       const r = await fetch('./lyrics.lrc');
@@ -86,14 +97,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }catch(e){ console.warn('no lyrics file'); }
   }
 
-  // center an element inside container
   function centerElementInContainer(el, container){
     if(!el || !container) return;
     const top = el.offsetTop - container.clientHeight/2 + el.clientHeight/2;
     try{ container.scrollTo({ top: top, behavior: 'smooth' }); } catch(e){ container.scrollTop = top; }
   }
 
-  // binary search for current lyric index by ms
   function findIndexByTime(ms){
     if(!lrcLines || !lrcLines.length) return -1;
     let lo = 0, hi = lrcLines.length - 1, ans = -1;
@@ -104,7 +113,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     return ans;
   }
 
-  // user interaction pause (prevent auto-scroll when user scrolls)
+  // user pause on manual scroll
   let userInteracted = false, userTimeout = null;
   function attachUserPause(){
     if(!lyricsBox) return;
@@ -114,11 +123,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
   }
   attachUserPause();
 
-  // sync logic: update highlighting and center current line when it changes
+  // sync
   let lastIndex = -1;
   audio.addEventListener('timeupdate', ()=>{
     if(!lrcLines || !lrcLines.length) return;
-    if(audio.paused) return; // only sync while playing
+    if(audio.paused) return;
     const cur = Math.floor(audio.currentTime * 1000);
     const idx = findIndexByTime(cur);
     if(idx === -1) return;
@@ -132,19 +141,16 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }
   });
 
-  // reset lastIndex when playback starts to avoid jumping to last at start
   audio.addEventListener('play', ()=>{ lastIndex = -1; });
 
-  // play button toggle
   playBtn.addEventListener('click', async ()=>{
     try{
       if(audio.paused){ await audio.play(); playBtn.textContent='暂停'; } else { audio.pause(); playBtn.textContent='播放/暂停'; }
     }catch(e){ alert('播放失败：请先交互或确认 music.mp3 已上传'); }
   });
 
-  // initial auto-detect load and initialization
+  // init
   detectMusic();
   loadLyrics();
-  // type poem
-  typePoem(poemLines, 28);
+  typePoemFixed(poemLines, 26);
 });
