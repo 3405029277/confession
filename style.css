@@ -1,1 +1,61 @@
-:root{--bg1:#fff0f6;--bg2:#fff8fb;--accent:#ff9db3;--card-bg:rgba(255,255,255,0.9)}*{box-sizing:border-box}html,body{height:100%;margin:0;font-family: 'Noto Serif SC', Georgia, serif;background:linear-gradient(135deg,var(--bg1),#ffeef6);color:#3b2b2f}#bg-visual{position:fixed;inset:0;z-index:-2}#bg-visual::before{content:'';position:absolute;inset:0;background:radial-gradient(600px 300px at 20% 20%, rgba(255,200,220,0.55), transparent 20%),radial-gradient(500px 250px at 80% 80%, rgba(255,230,240,0.45), transparent 18%);mix-blend-mode:screen} .intro{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px}.card{background:var(--card-bg);padding:26px;border-radius:14px;max-width:420px;text-align:center;backdrop-filter:blur(6px)}.cover{width:160px;height:160px;border-radius:12px;object-fit:cover;margin:0 auto 12px;border:6px solid rgba(255,255,255,0.6)}.lead{font-size:28px;color:#7a3440}.lead .name{color:var(--accent);font-weight:700}.controls{display:flex;gap:10px;justify-content:center;margin-top:8px}.btn{padding:10px 14px;border-radius:10px;border:none;background:transparent;color:#7a3740;cursor:pointer;font-weight:600}.btn.primary{background:linear-gradient(90deg,var(--accent),#ff7aa0);color:#fff}.hidden{display:none}.stage{min-height:100vh;padding:40px;display:flex;align-items:center;justify-content:center}.panel{background:linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,245,250,0.9));padding:28px;border-radius:14px;max-width:900px}.poem{font-size:20px;color:#7a3740;min-height:160px;white-space:pre-wrap;line-height:1.8}.petal-layer{position:fixed;inset:0;pointer-events:none;z-index:30}.thumbs{display:flex;gap:8px;flex-wrap:wrap}.thumb{width:120px;height:80px;border-radius:8px;overflow:hidden;background:#fff}
+/* style.css - romantic white & pink gradient with glows and soft stars */
+:root{
+  --bg-a:#fff6f9;
+  --bg-b:#fff0f6;
+  --accent:#ff6f98;
+  --muted:#6b3b44;
+  --card: rgba(255,255,255,0.92);
+}
+*{box-sizing:border-box;font-family: "Noto Serif SC", Georgia, "Songti SC", serif}
+html,body{height:100%;margin:0;background:linear-gradient(135deg,var(--bg-a),var(--bg-b));color:var(--muted);overflow:hidden}
+#bg-overlay{position:fixed;inset:0;z-index:-2;background:radial-gradient(500px 200px at 15% 20%, rgba(255,220,230,0.6), transparent 12%), radial-gradient(400px 160px at 85% 80%, rgba(255,235,240,0.45), transparent 14%);mix-blend-mode:screen}
+.center{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+.card{width:100%;max-width:520px;background:var(--card);padding:22px;border-radius:14px;box-shadow:0 18px 40px rgba(180,100,140,0.08);text-align:center}
+.cover{width:160px;height:160px;border-radius:12px;object-fit:cover;margin:0 auto 12px;border:6px solid rgba(255,255,255,0.7);box-shadow:0 8px 30px rgba(255,120,160,0.08)}
+
+h1{font-size:28px;margin:6px 0;color:#6a2f36}
+.name{color:var(--accent);font-weight:700}
+.lead{color:#7b3b42;margin-bottom:12px}
+.controls{display:flex;gap:10px;justify-content:center;margin:8px 0}
+.btn{padding:8px 12px;border-radius:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-weight:600}
+.btn.primary{background:linear-gradient(90deg,var(--accent),#ff8db0);color:white;box-shadow:0 6px 18px rgba(255,120,140,0.14)}
+
+/* settings */
+.settings{margin-top:12px;text-align:left}
+.row{display:flex;gap:8px;align-items:center;margin-top:6px}
+.row input[type="text"]{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(120,80,90,0.06)}
+
+/* stage */
+.hidden{display:none}
+.stage{min-height:100vh;padding:36px;display:flex;align-items:center;justify-content:center}
+.panel{background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,249,250,0.95));padding:18px;border-radius:12px;max-width:1100px;box-shadow:0 20px 60px rgba(160,90,120,0.06)}
+
+/* layout */
+.player-row{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+.poem-panel{flex:1;min-width:320px}
+.poem{font-size:20px;line-height:1.9;color:#5b2f34;white-space:pre-wrap;min-height:220px}
+.music-panel{width:360px;max-width:42%}
+.music-panel audio{width:100%;margin-bottom:8px}
+.music-inputs{display:flex;gap:8px;margin-bottom:8px}
+.music-inputs input{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(120,80,90,0.06)}
+
+/* lyrics */
+.lyrics-box{height:220px;overflow:hidden;border-radius:8px;background:linear-gradient(180deg,#fff,#fff8fb);padding:8px;border:1px solid rgba(200,160,170,0.08)}
+.lyrics{height:100%;overflow:auto;padding:6px 8px}
+.lyrics .line{padding:6px 0;color:#7a3b40;transition:color .2s, transform .2s}
+.lyrics .line.active{color:var(--accent);font-weight:700;transform:translateX(6px)}
+
+/* album */
+.album{margin-top:14px}
+.album-controls{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap}
+.thumb{width:120px;height:80px;border-radius:8px;overflow:hidden;background:#fff;border:1px solid rgba(200,160,170,0.12);display:flex;align-items:center;justify-content:center}
+.thumb img{width:100%;height:100%;object-fit:cover}
+
+.foot{margin-top:12px;text-align:right;color:rgba(120,60,80,0.6)}
+
+/* canvas petal */
+.petal-canvas{position:fixed;inset:0;pointer-events:none;z-index:40}
+
+/* responsive */
+@media(max-width:900px){ .player-row{flex-direction:column-reverse} .music-panel{width:100%} }
