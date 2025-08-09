@@ -8,20 +8,21 @@
 <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-  <div id="bg-overlay"></div>
+  <!-- Background image: place background.jpg in repo root or upload via UI -->
+  <div id="bg-wrapper" style="background-image:url('./background.jpg'); background-size:cover; background-position:center;"></div>
 
   <main id="intro" class="center">
-    <div class="card">
+    <div class="card transparent">
       <img id="coverFlower" src="./flower.png" alt="彼岸花" class="cover" />
       <h1>给 <span class="name">雨汐</span></h1>
-      <p class="lead">点花瓣，让我为你念这句——你是我的唯一。</p>
+      <p class="lead">点花瓣，让我为你说一句——你是我的唯一。</p>
 
       <div class="controls">
-        <button id="startBtn" class="btn primary">花瓣落下</button>
+        <button id="startBtn" class="btn primary">打开表白页面</button>
         <button id="skipBtn" class="btn">直接进入</button>
       </div>
 
-      <div class="settings">
+      <div class="settings transparent">
         <label>背景图片（放入仓库并填写文件名，或上传本地）</label>
         <div class="row">
           <input id="bgPath" type="text" placeholder="例如 background.jpg（放在仓库根目录）" />
@@ -37,28 +38,24 @@
         </div>
       </div>
 
-      <p class="tip">提示：把整个文件夹上传到 GitHub 并启用 Pages 后，替换花/背景/音乐/歌词文件即可。</p>
     </div>
   </main>
 
-  <section id="stage" class="hidden">
-    <div class="panel">
-      <div class="player-row">
-        <div class="poem-panel">
+  <section id="stage" class="hidden center">
+    <div class="panel transparent-panel">
+      <div class="top-row">
+        <div class="poem-area">
           <div id="poem" class="poem"></div>
         </div>
 
-        <div class="music-panel">
+        <div class="music-area">
           <audio id="audio" preload="auto" controls></audio>
-          <div class="music-inputs">
+          <div class="music-controls">
             <input id="musicName" placeholder="音乐文件名（示例：music.mp3 或 music.flac）" />
             <button id="loadMusic" class="btn">加载音乐</button>
             <button id="togglePlay" class="btn primary">播放/暂停</button>
           </div>
-
-          <div class="lyrics-box">
-            <div id="lyrics" class="lyrics"></div>
-          </div>
+          <div class="lyrics-box"><div id="lyrics" class="lyrics"></div></div>
         </div>
       </div>
 
@@ -74,8 +71,6 @@
       <footer class="foot">制作：你 · 真心永恒</footer>
     </div>
   </section>
-
-  <canvas id="petalCanvas" class="petal-canvas"></canvas>
 
 <script src="./script.js"></script>
 </body>
