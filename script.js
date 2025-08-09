@@ -186,3 +186,78 @@ audio.addEventListener('timeupdate', ()=>{
     }
   }
 });
+
+
+/* --- appended robust background & lyrics centering --- */
+
+/* ===== Robust lyrics-centering and ensure background visible on enter ===== */
+function ensureBackgroundVisible(){
+  // ensure bg-wrapper is behind everything and body is transparent
+  try{
+    const bg = document.getElementById('bg-wrapper');
+    if(bg){
+      bg.style.zIndex = '-9999';
+      bg.style.backgroundSize = 'cover';
+      bg.style.backgroundPosition = 'center';
+    }
+    document.documentElement.style.background = 'transparent';
+    document.body.style.background = 'transparent';
+  }catch(e){}
+}
+
+// Improved auto-scroll: center current lyric, but don't fight user scroll for 6s after interaction
+let userInteracted = false;
+let userScrollTimeout = null;
+let lastLyricIndex = -1;
+
+function attachLyricsInteractionPause(container){
+  if(!container) return;
+  container.addEventListener('wheel', ()=>{ userInteracted = true; clearTimeout(userScrollTimeout); userScrollTimeout = setTimeout(()=>userInteracted=false, 6000); }, {passive:true});
+  container.addEventListener('touchstart', ()=>{ userInteracted = true; clearTimeout(userScrollTimeout); userScrollTimeout = setTimeout(()=>userInteracted=false, 6000); }, {passive:true});
+  container.addEventListener('scroll', ()=>{ if(!userInteracted){ userInteracted = true; clearTimeout(userScrollTimeout); userScrollTimeout = setTimeout(()=>userInteracted=false, 6000); } }, {passive:true});
+}
+attachLyricsInteractionPause(lyricsContainer);
+
+// replace audio timeupdate handling with robust one
+audio.removeEventListener && audio.removeEventListener('timeupdate', function(){}); // best-effort clear
+
+audio.addEventListener('timeupdate', ()=>{
+  if(!lrcLines || !lrcLines.length) return;
+  const cur = audio.currentTime * 1000;
+  let idx = -1;
+  // binary search could be used; linear scan is OK for typical LRC sizes
+  for(let i=0;i<lrcLines.length;i++){
+    if(cur >= lrcLines[i].time) idx = i; else break;
+  }
+  if(idx === -1) return;
+  if(idx !== lastLyricIndex){
+    lastLyricIndex = idx;
+    const nodes = lyricsContainer.querySelectorAll('.line');
+    nodes.forEach((n,i)=> n.classList.toggle('active', i === idx));
+    if(!userInteracted && nodes[idx]){
+      // center the active line smoothly
+      const el = nodes[idx];
+      const container = lyricsContainer;
+      const top = el.offsetTop - container.clientHeight/2 + el.clientHeight/2;
+      try{
+        container.scrollTo({ top: top, behavior: 'smooth' });
+      }catch(e){
+        container.scrollTop = top;
+      }
+    }
+  }
+});
+
+// ensure background visible on enter
+const _origEnter = typeof enterStage === 'function' ? enterStage : null;
+enterStage = function(){
+  ensureBackgroundVisible();
+  if(_origEnter) _origEnter();
+  // after entering, force one sync scroll (in case audio already playing)
+  setTimeout(()=>{
+    if(typeof audio !== 'undefined' && audio.currentTime > 0){
+      const ev = new Event('timeupdate');
+      audio.dispatchEvent(ev);
+    }
+  }, 600);
+};
