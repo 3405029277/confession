@@ -35,6 +35,8 @@ async function showPoemLines(target, lines, perChar=28){
 // enter
 enterBtn.addEventListener('click', ()=>{ enterStage(); });
 function enterStage(){
+  try{ if(lyricsContainer) { lyricsContainer.scrollTop = 0; lastLyricIndex = -1; } }catch(e){}
+
   intro.classList.add('hidden');
   stage.classList.remove('hidden');
   showPoemLines(poemEl, poemLines, 28);
@@ -89,18 +91,6 @@ function renderLyrics(){
 }
 
 // sync lyrics
-audio.addEventListener('timeupdate', ()=>{
-  if(!lrcLines.length) return;
-  const cur = audio.currentTime * 1000;
-  let idx = -1;
-  for(let i=0;i<lrcLines.length;i++){ if(cur >= lrcLines[i].time) idx = i; else break; }
-  const nodes = lyricsContainer.querySelectorAll('.line');
-  nodes.forEach((n,i)=> n.classList.toggle('active', i === idx));
-  if(idx >= 0){
-    const el = nodes[idx]; const container = lyricsContainer; const top = el.offsetTop - container.clientHeight/2 + el.clientHeight/2; container.scrollTop = top;
-  }
-});
-
 togglePlay.addEventListener('click', async ()=>{
   try{ if(audio.paused){ await audio.play(); togglePlay.textContent='暂停'; } else { audio.pause(); togglePlay.textContent='播放/暂停'; } } catch(e){ showNotice('播放失败，请先与页面交互或确认 music.mp3 已上传'); }
 });
@@ -157,26 +147,7 @@ if (typeof lyricsContainer !== 'undefined' && lyricsContainer) {
 }
 
 // Improved audio timeupdate: only act if lyric index changed and user has not recently interacted
-audio.addEventListener('timeupdate', ()=>{
-  if(!lrcLines || !lrcLines.length) return;
-  const cur = audio.currentTime * 1000;
-  let idx = -1;
-  for(let i=0;i<lrcLines.length;i++){
-    if(cur >= lrcLines[i].time) idx = i; else break;
-  }
-  if(idx === -1) return;
-  // if index changed, update highlight and possibly auto-scroll
-  if(idx !== lastLyricIndex){
-    lastLyricIndex = idx;
-    const nodes = lyricsContainer.querySelectorAll('.line');
-    nodes.forEach((n,i)=> n.classList.toggle('active', i === idx));
-    if(!userInteracted){
-      // Safely scroll the active line into center view
-      const el = nodes[idx];
-      if(el && typeof el.scrollIntoView === 'function'){
-        try{
-          el.scrollIntoView({behavior: 'smooth', block: 'center'});
-        }catch(e){
+}catch(e){
           // fallback
           const container = lyricsContainer;
           const top = el.offsetTop - container.clientHeight/2 + el.clientHeight/2;
@@ -221,27 +192,7 @@ attachLyricsInteractionPause(lyricsContainer);
 // replace audio timeupdate handling with robust one
 audio.removeEventListener && audio.removeEventListener('timeupdate', function(){}); // best-effort clear
 
-audio.addEventListener('timeupdate', ()=>{
-  if(!lrcLines || !lrcLines.length) return;
-  const cur = audio.currentTime * 1000;
-  let idx = -1;
-  // binary search could be used; linear scan is OK for typical LRC sizes
-  for(let i=0;i<lrcLines.length;i++){
-    if(cur >= lrcLines[i].time) idx = i; else break;
-  }
-  if(idx === -1) return;
-  if(idx !== lastLyricIndex){
-    lastLyricIndex = idx;
-    const nodes = lyricsContainer.querySelectorAll('.line');
-    nodes.forEach((n,i)=> n.classList.toggle('active', i === idx));
-    if(!userInteracted && nodes[idx]){
-      // center the active line smoothly
-      const el = nodes[idx];
-      const container = lyricsContainer;
-      const top = el.offsetTop - container.clientHeight/2 + el.clientHeight/2;
-      try{
-        container.scrollTo({ top: top, behavior: 'smooth' });
-      }catch(e){
+}catch(e){
         container.scrollTop = top;
       }
     }
@@ -261,3 +212,53 @@ enterStage = function(){
     }
   }, 600);
 };
+
+
+
+/* Robust lyrics handling: binary search for index, reset on play/pause, respect user interaction */
+
+let lrcLines = lrcLines || []; // keep existing if present
+let lastLyricIndex = -1;
+let userInteracted = false;
+let userScrollTimeout = null;
+
+function findLyricIndex(ms){
+  if(!lrcLines || !lrcLines.length) return -1;
+  let lo = 0, hi = lrcLines.length - 1, ans = -1;
+  while(lo <= hi){
+    const mid = Math.floor((lo + hi) / 2);
+    if(ms >= lrcLines[mid].time){ ans = mid; lo = mid + 1; } else { hi = mid - 1; }
+  }
+  return ans;
+}
+
+function attachUserScrollPause(container){
+  if(!container) return;
+  container.addEventListener('wheel', ()=>{ userInteracted = true; clearTimeout(userScrollTimeout); userScrollTimeout = setTimeout(()=>userInteracted=false, 6000); }, {passive:true});
+  container.addEventListener('touchstart', ()=>{ userInteracted = true; clearTimeout(userScrollTimeout); userScrollTimeout = setTimeout(()=>userInteracted=false, 6000); }, {passive:true});
+  container.addEventListener('scroll', ()=>{ userInteracted = true; clearTimeout(userScrollTimeout); userScrollTimeout = setTimeout(()=>userInteracted=false, 6000); }, {passive:true});
+}
+attachUserScrollPause(lyricsContainer);
+
+// reset on play to avoid jumping to last when starting
+audio.addEventListener('play', ()=>{ lastLyricIndex = -1; });
+
+// main sync using binary search and center scroll when index changes
+audio.addEventListener('timeupdate', ()=>{
+  if(!lrcLines || !lrcLines.length) return;
+  const cur = Math.floor(audio.currentTime * 1000);
+  const idx = findLyricIndex(cur);
+  if(idx === -1) return;
+  if(idx !== lastLyricIndex){
+    lastLyricIndex = idx;
+    const nodes = lyricsContainer.querySelectorAll('.line');
+    nodes.forEach((n,i)=> n.classList.toggle('active', i === idx));
+    if(!userInteracted && nodes[idx]){
+      const el = nodes[idx];
+      const container = lyricsContainer;
+      // compute top to center the element
+      const top = el.offsetTop - container.clientHeight/2 + el.clientHeight/2;
+      try{ container.scrollTo({ top: top, behavior: 'smooth' }); } catch(e){ container.scrollTop = top; }
+    }
+  }
+});
