@@ -7,21 +7,20 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="entry-bg"></div>
   <main class="entry-center">
-    <img src="flower.png" alt="彼岸花" id="entryFlower" class="entry-flower">
-    <h1 class="entry-title">给 韩雨汐</h1>
-    <p class="entry-sub">点花，进入我的表白。</p>
+    <img src="flower.png" id="entryFlower" class="entry-flower" alt="彼岸花">
+    <h1 class="entry-title">给 <span class="name">韩雨汐</span></h1>
+    <p class="entry-sub">点花进入我的表白</p>
     <button id="enterBtn" class="btn">点我 · 表白</button>
+    <p class="hint">部署说明：把 background.jpg、music.mp3、lyrics.lrc 放仓库根目录（同名）</p>
   </main>
 
 <script>
 document.getElementById('enterBtn').addEventListener('click', ()=>{
   const f = document.getElementById('entryFlower');
-  // gentle scale animation then navigate
   f.style.transition = 'transform 420ms cubic-bezier(.2,.9,.2,1), opacity 420ms';
-  f.style.transform = 'scale(0.88) rotate(-6deg)';
-  f.style.opacity = '0.9';
+  f.style.transform = 'scale(0.9) rotate(-6deg)';
+  f.style.opacity = '0.95';
   setTimeout(()=>{ location.href = 'love.html'; }, 420);
 });
 </script>

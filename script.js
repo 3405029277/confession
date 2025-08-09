@@ -1,4 +1,4 @@
-// script.js - two-page behavior: per-char poem typing and lyrics-synced player
+// script.js - per-char typing (pure color) + lyrics sync
 document.addEventListener('DOMContentLoaded', ()=>{
   const poemEl = document.getElementById('poem');
   const audio = document.getElementById('audio');
@@ -6,20 +6,21 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const lyricsBox = document.getElementById('lyricsBox');
   const lyricsEl = document.getElementById('lyrics');
 
-  // Poem lines combined with lyrical sentiment
+  // lines: combined lyrical/confessional text (you can edit)
   const poemLines = [
     "你真的懂“唯一”的定义吗，不只是呼吸，",
-    "而是那一声叹息里，我的名字被温柔收藏；",
-    "你真的希望厘清，但若无千里共婵娟，",
-    "又怎知此心能否抵达你的门前？",
-    "我真的爱你，句句不轻易，眼神里藏着海浪的深情，",
-    "在颠沛流离中愿与你并肩，哪怕风雨；",
+    "而是那在日常里被你点亮的温柔光影；",
+    "你真的希望厘清，那份不言的牵挂，",
+    "我以余生为誓，愿为你守候每个清晨与黑夜。",
+    "我真的爱你，句句不轻易，眼神里藏着海的深情，",
+    "在颠沛与流离中，愿与你并肩，风雨共行；",
     "若问此生所依，便是你一笑在眉间，",
-    "若问此心所向，唯有雨汐，是我唯一光焰。"
+    "若问此心所向，唯有雨汐，是我唯一。"
   ];
 
-  // prepare poem container (create lines DOM)
+  // Prepare poem container
   function preparePoem(lines){
+    if(!poemEl) return [];
     poemEl.innerHTML = '';
     const containers = [];
     for(let i=0;i<lines.length;i++){
@@ -31,7 +32,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     return containers;
   }
 
-  // Type per character into spans (each span gets gradient via CSS)
+  // Type per character with per-char span; use pure color (no gradient)
   async function typePerChar(lines, perChar = 70){
     const containers = preparePoem(lines);
     for(let i=0;i<lines.length;i++){
@@ -44,7 +45,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
         ch.style.transform = 'translateY(8px)';
         ch.style.transition = 'opacity .18s ease, transform .18s ease';
         container.appendChild(ch);
-        // micro delay before reveal
         await new Promise(r=>setTimeout(r, 12));
         requestAnimationFrame(()=>{ ch.style.opacity = '1'; ch.style.transform = 'translateY(0)'; });
         await new Promise(r=>setTimeout(r, perChar));
@@ -54,12 +54,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }
   }
 
-  // detect music file
+  // music detect (mp3 or flac)
   function detectMusic(){
     fetch('./music.mp3').then(r=>{ if(r.ok){ audio.src = './music.mp3'; } else { fetch('./music.flac').then(r2=>{ if(r2.ok) audio.src='./music.flac'; }); } }).catch(()=>{});
   }
 
-  // parse LRC times
+  // parse LRC
   function parseLRC(text){
     const lines = text.split(/\r?\n/);
     const res = [];
@@ -82,6 +82,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   let lrcLines = [];
   function renderLyrics(lines){
+    if(!lyricsEl) return;
     lyricsEl.innerHTML = '';
     lines.forEach(ln=>{
       const d = document.createElement('div');
@@ -90,7 +91,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
       d.textContent = ln.text;
       lyricsEl.appendChild(d);
     });
-    lyricsBox.scrollTop = 0;
+    if(lyricsBox) lyricsBox.scrollTop = 0;
   }
 
   async function loadLyrics(){
@@ -145,14 +146,17 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
   audio.addEventListener('play', ()=>{ lastIndex = -1; });
 
-  playBtn.addEventListener('click', async ()=>{
-    try{
-      if(audio.paused){ await audio.play(); playBtn.textContent='暂停'; } else { audio.pause(); playBtn.textContent='播放/暂停'; }
-    }catch(e){ alert('播放失败：请先交互或确认 music.mp3 已上传'); }
-  });
+  if(playBtn){
+    playBtn.addEventListener('click', async ()=>{
+      try{
+        if(audio.paused){ await audio.play(); playBtn.textContent='暂停'; } else { audio.pause(); playBtn.textContent='播放/暂停'; }
+      }catch(e){ alert('播放失败：请先交互或确认 music.mp3 已上传'); }
+    });
+  }
 
   // init
   detectMusic();
   loadLyrics();
+  // start typing after small delay
   setTimeout(()=>{ typePerChar(poemLines, 70); }, 480);
 });

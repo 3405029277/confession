@@ -1,74 +1,65 @@
-/* style.css - two-page package */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&display=swap');
-:root{--accent:#ff6f98;--bg:#fff}
-*{box-sizing:border-box}
-html,body{height:100%;margin:0;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(180deg,#fceff2 0%, #ffeef8 100%);color:#222}
+/* style.css - pure color, rounded font, background image as page background */
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap');
+:root{--primary-cyan:#00e5ff;--primary-pink:#ff6ec7;--poem-color:var(--primary-cyan);--panel-bg: rgba(255,255,255,0.00)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:"Quicksand", "Noto Sans SC", "PingFang SC","Microsoft YaHei",sans-serif}
+body{
+  background-image: url('./background.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  color: white;
+}
 
-/* ---- index (entry) ---- */
-.entry-bg{position:fixed;inset:0;background:linear-gradient(180deg,#ffdfe8 0%, #fff6fb 100%);z-index:0}
-.entry-center{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px}
-.entry-flower{width:220px;height:220px;object-fit:cover;border-radius:18px;box-shadow:0 18px 40px rgba(0,0,0,0.12)}
-.entry-title{font-size:28px;color:#5a1b3b;margin:0}
-.entry-sub{color:#6b2a48;margin:0;font-weight:600}
-.btn{padding:10px 16px;border-radius:12px;border:none;background:linear-gradient(90deg,var(--accent),#ff8db0);color:white;cursor:pointer;font-weight:700;box-shadow:0 8px 20px rgba(0,0,0,0.08)}
-
-/* ---- love page layout ---- */
-.page-bg{position:fixed;inset:0;z-index:0;background:transparent;display:block}
-.container{position:relative;z-index:2;min-height:100vh;padding:24px;display:flex;flex-direction:column;align-items:center;gap:18px}
-.topbar{position:fixed;left:12px;top:12px;z-index:6;display:flex;align-items:center;gap:12px}
-.back{color:#fff;text-decoration:none;background:rgba(0,0,0,0.28);padding:6px 10px;border-radius:8px}
-.title{color:rgba(255,255,255,0.95);font-weight:800;text-shadow:0 4px 16px rgba(0,0,0,0.35)}
-
-/* hero center image */
-.hero{width:100%;display:flex;justify-content:center;align-items:center;padding-top:8vh}
-.hero img{max-width:72%;height:auto;border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,0.35);display:block}
-
-/* poem below image: transparent background, gradient text, per-char spans */
-.poem-wrap{width:100%;max-width:900px;display:flex;justify-content:center;padding:12px}
-.poem{
-  width:100%;
-  font-size:34px;
-  font-weight:900;
-  line-height:1.6;
-  text-align:center;
-  padding:6px 12px;
-  /* gradient set as CSS variable so spans can inherit */
-  --g: linear-gradient(90deg,#ff4d6d 0%,#ff7aa3 18%,#ffd86b 38%,#8ee37a 58%,#6dd3ff 78%,#b98bff 100%);
-  background:var(--g);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  background-clip:text;
-  color:transparent;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
+/* overlay to slightly darken background for contrast (very subtle) */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;background:linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.18));
   pointer-events:none;
 }
+
+.overlay{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:28px 18px;gap:18px}
+.topbar{position:fixed;left:12px;top:12px;z-index:5;display:flex;align-items:center;gap:12px}
+.back{color:#fff;text-decoration:none;background:rgba(0,0,0,0.28);padding:6px 10px;border-radius:8px}
+.title{color:#fff;font-weight:700;text-shadow:0 6px 18px rgba(0,0,0,0.35)}
+
+/* content area centralized */
+.content{width:100%;max-width:980px;display:flex;flex-direction:column;align-items:center;gap:20px;padding-top:8vh}
+
+/* Poem styling: pure color (not gradient), rounded font */
+.poem-wrap{width:100%;display:flex;justify-content:center;align-items:center;padding:4px}
+.poem{width:100%;max-width:900px;font-size:36px;font-weight:700;line-height:1.5;text-align:center;color:var(--poem-color);pointer-events:none;text-shadow:0 2px 8px rgba(0,0,0,0.28)}
 .poem-line{min-height:1.6em;opacity:0;transform:translateY(8px);display:block}
 .poem-line.visible{opacity:1;transform:translateY(0);transition:opacity .32s ease, transform .32s ease}
-.poem-line span{display:inline-block; /* each char */ background:var(--g); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; color:transparent;}
+.poem-line span{display:inline-block;color:var(--poem-color)}
+
+/* choose pink instead: you can edit --poem-color variable to var(--primary-pink) if you prefer */
+.poem.pink { --poem-color: var(--primary-pink); }
 
 /* player and lyrics */
 .player-wrap{width:100%;max-width:900px;display:flex;gap:18px;align-items:flex-start;justify-content:center;flex-wrap:wrap;padding:8px}
-.player{display:flex;flex-direction:column;align-items:center;gap:8px;width:320px}
-.mini-cover{width:120px;height:120px;border-radius:12px;object-fit:cover;box-shadow:0 10px 30px rgba(0,0,0,0.3)}
+.player{display:flex;flex-direction:column;align-items:center;gap:8px;width:320px;background:var(--panel-bg);}
+.mini-cover{width:120px;height:120px;border-radius:16px;object-fit:cover;box-shadow:0 10px 30px rgba(0,0,0,0.32)}
 .controls-row{display:flex;gap:8px}
-.btn-small{padding:8px 12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),#ff8db0);color:white;cursor:pointer;font-weight:700}
-.btn{padding:8px 12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),#ff8db0);color:white;cursor:pointer;font-weight:700}
+.btn{padding:8px 12px;border-radius:12px;border:none;background:linear-gradient(90deg,var(--poem-color),#ffffff22);color:#012;cursor:pointer;font-weight:700}
 .lyrics-wrap{flex:1;min-width:260px;max-width:520px}
-.lyrics-box{height:220px;overflow:auto;padding:8px;border-radius:10px;background:rgba(0,0,0,0.18);backdrop-filter:blur(4px)}
+.lyrics-box{height:220px;overflow:auto;padding:8px;border-radius:10px;background:rgba(0,0,0,0.22);backdrop-filter:blur(4px)}
 .lyrics{display:flex;flex-direction:column;gap:6px}
-.line{padding:6px 4px;color:rgba(255,255,255,0.9);transition:color .18s,transform .18s}
-.line.active{color:var(--accent);font-weight:800;transform:translateX(6px)}
+.line{padding:6px 4px;color:rgba(255,255,255,0.92);transition:color .18s,transform .18s}
+.line.active{color:var(--poem-color);font-weight:800;transform:translateX(6px)}
 
-/* footer */
-.foot{color:rgba(255,255,255,0.9);margin-top:12px}
+/* entry page styles */
+.entry-center{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px}
+.entry-flower{width:220px;height:220px;object-fit:cover;border-radius:18px;box-shadow:0 18px 40px rgba(0,0,0,0.12);border:4px solid rgba(255,255,255,0.06)}
+.entry-title{font-size:28px;color:var(--poem-color);font-weight:800}
+.entry-sub{color:rgba(255,255,255,0.9);font-weight:600}
+.hint{color:rgba(255,255,255,0.85);font-size:12px;margin-top:6px}
 
 /* responsive */
 @media(max-width:900px){
-  .hero img{max-width:94%}
   .poem{font-size:22px}
-  .player{width:100%;flex-direction:row;align-items:center;justify-content:space-between}
   .mini-cover{width:80px;height:80px}
   .lyrics-box{height:160px}
+  .entry-flower{width:160px;height:160px}
 }
