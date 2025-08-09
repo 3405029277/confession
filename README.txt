@@ -1,11 +1,7 @@
 
-Auto-load package — 直接使用预定的文件名（无需页面上的导入按钮）
+Final fix package (confession_final_fix2)
 
-请把下列文件按同名上传到仓库根目录（或替换包内文件），页面会自动使用它们：
-- background.jpg    （页面背景）
-- music.mp3         （背景音乐；如果不存在会回退到 music.flac）
-- lyrics.lrc        （LRC 歌词文件，用于歌词同步）
-- flower.png        （彼岸花封面/飘落素材，已包含）
-- 可选缩略图：thumb1.jpg ... thumb6.jpg （如果你把回忆图放为这些文件名，页面会自动加载它们到相册）
-
-部署：上传此文件夹到 GitHub 仓库根目录，启用 Pages（Settings → Pages → main branch / root），访问 https://<你的用户名>.github.io/<仓库名>/
+- Background displayed via ./background.jpg (already included). UI overlays are transparent so your background fully shows.
+- Click "进入表白" to enter; poem is shown line-by-line; music auto-detected (music.mp3 or music.flac); lyrics auto-loaded from lyrics.lrc and synchronized.
+- Lyrics sync fixed: only syncs while audio is playing, uses binary search and centers current line; user scroll will pause auto-scroll for 6s.
+- If you still see a pink overlay, clear browser cache (Ctrl+F5) and ensure background.jpg is present in repo root.

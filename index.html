@@ -8,23 +8,23 @@
 <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-  <div id="bg-wrapper" style="background-image:url('./background.jpg'); background-size:cover; background-position:center;"></div>
+  <!-- background wrapper shows background.jpg clearly -->
+  <div id="bg-wrapper" aria-hidden="true"></div>
 
-  <main id="intro" class="center">
-    <div class="card transparent">
+  <main id="intro" class="center" aria-label="intro">
+    <div class="card transparent" id="cardIntro" role="region">
       <img id="coverFlower" src="./flower.png" alt="彼岸花" class="cover" />
       <h1>给 <span class="name">雨汐</span></h1>
-      <p class="lead">点我进入表白页面 — 你是我的唯一。</p>
-
+      <p class="lead">点下方按钮，走进我的告白：你是我的唯一。</p>
       <div class="controls">
         <button id="enterBtn" class="btn primary">进入表白</button>
       </div>
-      <p class="tip">说明：把文件按以下文件名上传到仓库根目录（background.jpg, music.mp3, lyrics.lrc），页面会自动使用它们。</p>
+      <p class="tip">提示：把文件按文件名上传到仓库根目录（background.jpg, music.mp3, lyrics.lrc）。</p>
     </div>
   </main>
 
-  <section id="stage" class="hidden center">
-    <div class="panel transparent-panel">
+  <section id="stage" class="hidden center" aria-label="stage">
+    <div class="panel transparent-panel" id="mainPanel" role="main">
       <div class="top-row">
         <div class="poem-area">
           <div id="poem" class="poem"></div>
@@ -35,13 +35,12 @@
           <div class="music-controls">
             <button id="togglePlay" class="btn primary">播放/暂停</button>
           </div>
-
-          <div class="lyrics-box"><div id="lyrics" class="lyrics"></div></div>
+          <div class="lyrics-box"><div id="lyrics" class="lyrics" tabindex="0" aria-live="polite"></div></div>
         </div>
       </div>
 
       <div class="album">
-        <h3>回忆相册（会话预览，上传至仓库后可通过在 repo 放图片直接显示）</h3>
+        <h3 style="color:inherit">回忆相册（可在 repo 放 thumb1.jpg..thumb6.jpg 自动显示）</h3>
         <div id="thumbs" class="thumbs"></div>
       </div>
 
