@@ -3,41 +3,27 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>给韩雨汐 — 告白</title>
-<link rel="stylesheet" href="style.css" />
+<title>给韩雨汐 — 入口</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="page-bg" id="pageBg" aria-hidden="true"></div>
-
-  <main class="container">
-    <header class="header">
-      <h1 class="title">给 韩雨汐</h1>
-    </header>
-
-    <section class="hero" aria-label="背景图片">
-      <img id="centerImage" src="./background.jpg" alt="回忆的画面" />
-    </section>
-
-    <section class="poem-wrap" aria-label="表白诗">
-      <div id="poem" class="poem" aria-live="polite"></div>
-    </section>
-
-    <section class="player-wrap" aria-label="音乐播放器与歌词">
-      <div class="player">
-        <img src="./flower.png" alt="彼岸花" class="mini-cover" />
-        <audio id="audio" controls preload="none"></audio>
-        <div class="controls-row">
-          <button id="playBtn" class="btn">播放/暂停</button>
-        </div>
-      </div>
-      <div class="lyrics-wrap">
-        <div id="lyricsBox" class="lyrics-box"><div id="lyrics" class="lyrics" tabindex="0" aria-live="polite"></div></div>
-      </div>
-    </section>
-
-    <footer class="foot">制作：你 · 真心永恒</footer>
+  <div class="entry-bg"></div>
+  <main class="entry-center">
+    <img src="flower.png" alt="彼岸花" id="entryFlower" class="entry-flower">
+    <h1 class="entry-title">给 韩雨汐</h1>
+    <p class="entry-sub">点花，进入我的表白。</p>
+    <button id="enterBtn" class="btn">点我 · 表白</button>
   </main>
 
-<script src="script.js"></script>
+<script>
+document.getElementById('enterBtn').addEventListener('click', ()=>{
+  const f = document.getElementById('entryFlower');
+  // gentle scale animation then navigate
+  f.style.transition = 'transform 420ms cubic-bezier(.2,.9,.2,1), opacity 420ms';
+  f.style.transform = 'scale(0.88) rotate(-6deg)';
+  f.style.opacity = '0.9';
+  setTimeout(()=>{ location.href = 'love.html'; }, 420);
+});
+</script>
 </body>
 </html>

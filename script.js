@@ -1,4 +1,4 @@
-// script.js - per-character typing poem (below center image) + lyrics-synced player
+// script.js - two-page behavior: per-char poem typing and lyrics-synced player
 document.addEventListener('DOMContentLoaded', ()=>{
   const poemEl = document.getElementById('poem');
   const audio = document.getElementById('audio');
@@ -6,38 +6,37 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const lyricsBox = document.getElementById('lyricsBox');
   const lyricsEl = document.getElementById('lyrics');
 
-  // Combined poem that weaves in lines from the provided lyrics
+  // Poem lines combined with lyrical sentiment
   const poemLines = [
-    "你真的懂“唯一”吗，何处寻得那般定义，",
-    "不是随手的呼吸，而是心底一处温明；",
-    "你真的希望厘清，闭上眼，听见我为你守的誓言，",
-    "若没交心，言语不过风，唯有行动能证明。",
+    "你真的懂“唯一”的定义吗，不只是呼吸，",
+    "而是那一声叹息里，我的名字被温柔收藏；",
+    "你真的希望厘清，但若无千里共婵娟，",
+    "又怎知此心能否抵达你的门前？",
     "我真的爱你，句句不轻易，眼神里藏着海浪的深情，",
-    "在颠沛流离中，愿与你并肩，哪怕风雨。",
-    "若问此生所依，便是你一笑在眉间；",
-    "若问此心何所向，唯有雨汐，不负此生言。"
+    "在颠沛流离中愿与你并肩，哪怕风雨；",
+    "若问此生所依，便是你一笑在眉间，",
+    "若问此心所向，唯有雨汐，是我唯一光焰。"
   ];
 
-  // create reserved lines and per-char spans
+  // prepare poem container (create lines DOM)
   function preparePoem(lines){
     poemEl.innerHTML = '';
-    const lineEls = [];
+    const containers = [];
     for(let i=0;i<lines.length;i++){
-      const div = document.createElement('div');
-      div.className = 'poem-line';
-      poemEl.appendChild(div);
-      lineEls.push(div);
+      const d = document.createElement('div');
+      d.className = 'poem-line';
+      poemEl.appendChild(d);
+      containers.push(d);
     }
-    return lineEls;
+    return containers;
   }
 
-  // per-character typing that reveals one char at a time and keeps gradient
+  // Type per character into spans (each span gets gradient via CSS)
   async function typePerChar(lines, perChar = 70){
-    const lineContainers = preparePoem(lines);
+    const containers = preparePoem(lines);
     for(let i=0;i<lines.length;i++){
       const text = lines[i];
-      const container = lineContainers[i];
-      // create spans per char
+      const container = containers[i];
       for(let c=0;c<text.length;c++){
         const ch = document.createElement('span');
         ch.textContent = text[c];
@@ -45,25 +44,22 @@ document.addEventListener('DOMContentLoaded', ()=>{
         ch.style.transform = 'translateY(8px)';
         ch.style.transition = 'opacity .18s ease, transform .18s ease';
         container.appendChild(ch);
-        // small micro-delay to allow DOM insertion
+        // micro delay before reveal
         await new Promise(r=>setTimeout(r, 12));
-        requestAnimationFrame(()=>{
-          ch.style.opacity = '1';
-          ch.style.transform = 'translateY(0)';
-        });
+        requestAnimationFrame(()=>{ ch.style.opacity = '1'; ch.style.transform = 'translateY(0)'; });
         await new Promise(r=>setTimeout(r, perChar));
       }
       container.classList.add('visible');
-      await new Promise(r=>setTimeout(r, 320));
+      await new Promise(r=>setTimeout(r, 300));
     }
   }
 
-  // music detection: prefer music.mp3 then .flac
+  // detect music file
   function detectMusic(){
-    fetch('./music.mp3').then(r=>{ if(r.ok){ audio.src = './music.mp3'; } else { fetch('./music.flac').then(r2=>{ if(r2.ok) audio.src = './music.flac'; }); } }).catch(()=>{});
+    fetch('./music.mp3').then(r=>{ if(r.ok){ audio.src = './music.mp3'; } else { fetch('./music.flac').then(r2=>{ if(r2.ok) audio.src='./music.flac'; }); } }).catch(()=>{});
   }
 
-  // parse LRC
+  // parse LRC times
   function parseLRC(text){
     const lines = text.split(/\r?\n/);
     const res = [];
@@ -107,7 +103,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }catch(e){ console.warn('no lyrics file'); }
   }
 
-  // lyrics sync helpers
   function findIndexByTime(ms){
     if(!lrcLines || !lrcLines.length) return -1;
     let lo = 0, hi = lrcLines.length - 1, ans = -1;
@@ -117,10 +112,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }
     return ans;
   }
+
   function centerElement(el, container){
     if(!el || !container) return;
     const top = el.offsetTop - container.clientHeight/2 + el.clientHeight/2;
-    try{ container.scrollTo({top, behavior:'smooth', left:0}); container.scrollTop = top; } catch(e){ container.scrollTop = top; }
+    try{ container.scrollTo({top, behavior:'smooth'}); container.scrollTop = top; } catch(e){ container.scrollTop = top; }
   }
 
   let lastIndex = -1;
@@ -158,6 +154,5 @@ document.addEventListener('DOMContentLoaded', ()=>{
   // init
   detectMusic();
   loadLyrics();
-  // start typing after small delay so image loads and page feels stable
-  setTimeout(()=>{ typePerChar(poemLines, 70); }, 600);
+  setTimeout(()=>{ typePerChar(poemLines, 70); }, 480);
 });

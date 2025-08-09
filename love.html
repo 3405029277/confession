@@ -1,39 +1,37 @@
 <!doctype html>
 <html lang="zh-CN">
-<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>给韩雨汐 — 我唯一的表白</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="bg" aria-hidden="true"></div>
+  <div class="page-bg" id="pageBg" aria-hidden="true"></div>
+  <main class="container">
+    <header class="topbar"><a href="index.html" class="back">← 返回</a><div class="title">给 韩雨汐</div></header>
 
-  <div class="overlay">
-    <header class="topbar">
-      <a href="index.html" class="back">← 返回</a>
-      <div class="title">给 韩雨汐</div>
-    </header>
+    <section class="hero">
+      <img id="centerImage" src="./background.jpg" alt="回忆的画面">
+    </section>
 
-    <main class="stage center">
-      <section class="poem-panel">
-        <div id="poem" class="poem" aria-live="polite"></div>
-      </section>
+    <section class="poem-wrap">
+      <div id="poem" class="poem" aria-live="polite"></div>
+    </section>
 
-      <aside class="player-panel">
-        <div class="cover-row">
-          <img src="flower.png" class="cover small" alt="彼岸花">
-        </div>
-        <audio id="audio" controls preload="auto"></audio>
-        <div class="player-controls">
-          <button id="playBtn" class="btn primary">播放/暂停</button>
-        </div>
-        <div class="lyrics-box" id="lyricsBox">
-          <div id="lyrics" class="lyrics" tabindex="0" aria-live="polite"></div>
-        </div>
-      </aside>
-    </main>
+    <section class="player-wrap">
+      <div class="player">
+        <img src="./flower.png" alt="彼岸花" class="mini-cover">
+        <audio id="audio" controls preload="none"></audio>
+        <div class="controls-row"><button id="playBtn" class="btn">播放/暂停</button></div>
+      </div>
+      <div class="lyrics-wrap">
+        <div id="lyricsBox" class="lyrics-box"><div id="lyrics" class="lyrics" tabindex="0" aria-live="polite"></div></div>
+      </div>
+    </section>
 
     <footer class="foot">制作：你 · 真心永恒</footer>
-  </div>
+  </main>
 
 <script src="script.js"></script>
 </body>
