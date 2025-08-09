@@ -1,21 +1,43 @@
 <!doctype html>
 <html lang="zh-CN">
-<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>给韩雨汐 — 入口</title>
-<link rel="stylesheet" href="style.css">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>给韩雨汐 — 告白</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="bg" aria-hidden="true"></div>
-  <main class="center">
-    <div class="intro-card">
-      <img src="flower.png" alt="彼岸花" class="cover">
-      <h1>给 <span class="name">韩雨汐</span></h1>
-      <p class="lead">点下方按钮进入我的表白。</p>
-      <div class="controls">
-        <a class="btn primary" href="love.html">进入表白</a>
+  <div class="page-bg" id="pageBg" aria-hidden="true"></div>
+
+  <main class="container">
+    <header class="header">
+      <h1 class="title">给 韩雨汐</h1>
+    </header>
+
+    <section class="hero" aria-label="背景图片">
+      <img id="centerImage" src="./background.jpg" alt="回忆的画面" />
+    </section>
+
+    <section class="poem-wrap" aria-label="表白诗">
+      <div id="poem" class="poem" aria-live="polite"></div>
+    </section>
+
+    <section class="player-wrap" aria-label="音乐播放器与歌词">
+      <div class="player">
+        <img src="./flower.png" alt="彼岸花" class="mini-cover" />
+        <audio id="audio" controls preload="none"></audio>
+        <div class="controls-row">
+          <button id="playBtn" class="btn">播放/暂停</button>
+        </div>
       </div>
-      <p class="tip">部署提示：把 background.jpg、music.mp3、lyrics.lrc 上传到仓库根目录（同名）。</p>
-    </div>
+      <div class="lyrics-wrap">
+        <div id="lyricsBox" class="lyrics-box"><div id="lyrics" class="lyrics" tabindex="0" aria-live="polite"></div></div>
+      </div>
+    </section>
+
+    <footer class="foot">制作：你 · 真心永恒</footer>
   </main>
+
+<script src="script.js"></script>
 </body>
 </html>

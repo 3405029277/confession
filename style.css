@@ -1,98 +1,56 @@
-/* style.css */
+/* style.css - poem per-char typing + rainbow gradient + transparent background */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&display=swap');
-:root{--accent:#ff79a8;--text:#fff}
-*{box-sizing:border-box;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif}
-html,body{height:100%;margin:0;background:transparent;color:var(--text)}
-#bg{position:fixed;inset:0;z-index:0;background-image:url('./background.jpg');background-size:cover;background-position:center;filter:none}
-.center{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;position:relative;z-index:3}
-.intro-card{background:transparent;text-align:center;padding:20px;border-radius:12px;color:var(--text);max-width:640px}
-.cover{width:160px;height:160px;border-radius:20px;object-fit:cover;border:3px solid rgba(255,255,255,0.18);box-shadow:0 10px 30px rgba(0,0,0,0.3);margin:0 auto 12px;display:block}
-.name{color:var(--accent);font-weight:800}
-.lead,.tip{color:rgba(255,255,255,0.95);font-weight:600}
-.controls{margin-top:12px}
-.btn{padding:10px 14px;border-radius:12px;border:0;cursor:pointer;background:linear-gradient(90deg,var(--accent),#ff9abb);color:#fff;text-decoration:none;display:inline-block;font-weight:700}
-.topbar{position:fixed;left:0;right:0;top:12px;display:flex;align-items:center;justify-content:space-between;padding:6px 18px;z-index:6}
-.back{color:#fff;text-decoration:none;font-weight:700}
-.title{color:rgba(255,255,255,0.95);font-weight:800}
-
-/* layout */
-.stage{gap:28px;flex-wrap:wrap;max-width:1100px;display:flex;align-items:flex-start}
-.poem-panel{flex:1;min-width:320px;padding:12px;position:relative;z-index:3}
-.player-panel{width:360px;max-width:42%;padding:12px;background:transparent;border-radius:8px;position:relative;z-index:4}
-
-/* Rainbow poem styling - big, round, fixed gradient */
-.poem {
-  font-family: "Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
-  font-size: 44px;
-  font-weight: 900;
-  line-height: 1.5;
-  letter-spacing: 0.6px;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  max-width: 100%;
-  padding: 6px 12px;
-  background: linear-gradient(90deg, #ff4d6d 0%, #ff7aa3 18%, #ffd86b 38%, #8ee37a 58%, #6dd3ff 78%, #b98bff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  color: transparent;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.18);
+:root{--accent:#ff6f98;--bg:#fff}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;background:transparent;color:#fff}
+.page-bg{position:fixed;inset:0;z-index:0;background-image:url('./background.jpg');background-size:contain;background-position:center center;background-repeat:no-repeat;filter:none;display:block}
+.container{position:relative;z-index:2;min-height:100vh;padding:24px;display:flex;flex-direction:column;align-items:center;gap:18px}
+.header{margin-top:6vh;text-align:center}
+.title{font-size:28px;color:rgba(255,255,255,0.96);text-shadow:0 2px 12px rgba(0,0,0,0.35)}
+.hero{width:100%;display:flex;justify-content:center;align-items:center}
+.hero img{max-width:70%;height:auto;border-radius:14px;box-shadow:0 18px 40px rgba(0,0,0,0.35);display:block}
+.poem-wrap{width:100%;max-width:900px;display:flex;justify-content:center;align-items:flex-start;padding:6px}
+/* Poem styling: gradient text, transparent background, per-line reserved spacing */
+.poem{
+  width:100%; 
+  font-size:32px;
+  font-weight:800;
+  line-height:1.6;
+  text-align:center;
+  padding:6px 12px;
+  background:linear-gradient(90deg,#ff4d6d 0%,#ff7aa3 18%,#ffd86b 38%,#8ee37a 58%,#6dd3ff 78%,#b98bff 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  color:transparent;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  pointer-events:none;
 }
+.poem-line{min-height:1.6em;opacity:0;transform:translateY(8px);display:block}
+.poem-line.visible{opacity:1;transform:translateY(0);transition:opacity .32s ease, transform .32s ease}
+.poem-line span{display:inline-block;background:inherit;-webkit-background-clip:text;background-clip:text;color:transparent}
 
-/* each line reserved to avoid jumps */
-.poem-line { width:100%; min-height:1.6em; opacity:0; transform:translateY(8px); display:block; margin:6px 0; }
-.poem-line.visible { opacity:1; transform:translateY(0); transition:opacity .36s ease, transform .36s ease; }
-.poem-line .char { display:inline-block; }
-
-.cover.small{width:120px;height:120px;margin-bottom:8px;border-radius:14px}
-.player-controls{margin:8px 0}
-.lyrics-box{height:300px;overflow:auto;border-radius:12px;padding:8px;background:rgba(0,0,0,0.12);backdrop-filter:blur(4px);z-index:4}
-.lyrics{display:flex;flex-direction:column;gap:6px;padding-right:6px}
-.line{padding:8px 6px;color:rgba(255,255,255,0.88);transition:color .18s,transform .18s}
+/* Player and lyrics below poem */
+.player-wrap{width:100%;max-width:900px;display:flex;gap:18px;align-items:flex-start;justify-content:center;flex-wrap:wrap;padding:8px}
+.player{display:flex;flex-direction:column;align-items:center;gap:8px;width:320px}
+.mini-cover{width:120px;height:120px;border-radius:12px;object-fit:cover;box-shadow:0 10px 30px rgba(0,0,0,0.3)}
+.btn{padding:8px 12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),#ff8db0);color:white;cursor:pointer;font-weight:700}
+.lyrics-wrap{flex:1;min-width:260px;max-width:520px}
+.lyrics-box{height:220px;overflow:auto;padding:8px;border-radius:10px;background:rgba(0,0,0,0.18);backdrop-filter:blur(4px)}
+.lyrics{display:flex;flex-direction:column;gap:6px}
+.line{padding:6px 4px;color:rgba(255,255,255,0.9);transition:color .18s,transform .18s}
 .line.active{color:var(--accent);font-weight:800;transform:translateX(6px)}
 
-/* responsive adjustments */
-@media(max-width:1100px){
-  .poem { font-size: 32px; }
-  .player-panel{width:46%}
-}
+/* footer */
+.foot{color:rgba(255,255,255,0.9);margin-top:12px}
+
+/* responsive tweaks */
 @media(max-width:900px){
-  .stage{flex-direction:column;align-items:stretch}
-  .poem { font-size: 22px; text-align:center; align-items:center; min-height:24vh }
-  .player-panel{width:100%; margin-top:12px; z-index:5 }
-  .lyrics-box{height:220px}
+  .hero img{max-width:94%}
+  .poem{font-size:22px}
+  .player{width:100%;flex-direction:row;align-items:center;justify-content:space-between}
+  .mini-cover{width:80px;height:80px}
+  .lyrics-box{height:160px}
 }
-
-
-/* Visibility fix appended */
-
-/* Ensure gradient applies to each line and child elements */
-.poem {
-  background: linear-gradient(90deg, #ff4d6d 0%, #ff7aa3 18%, #ffd86b 38%, #8ee37a 58%, #6dd3ff 78%, #b98bff 100%) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  background-clip: text !important;
-  color: transparent !important;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-}
-
-/* Apply same clipping to each line so per-line text is visible even when adding text nodes */
-.poem-line {
-  background: linear-gradient(90deg, #ff4d6d 0%, #ff7aa3 18%, #ffd86b 38%, #8ee37a 58%, #6dd3ff 78%, #b98bff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  color: transparent;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-  /* keep reserved height and transitions */
-  width:100%; min-height:1.6em; opacity:0; transform:translateY(8px); display:block; margin:6px 0;
-}
-.poem-line.visible { opacity:1; transform:translateY(0); transition:opacity .36s ease, transform .36s ease; }
-
-/* Remove any .char styling which created separate inline elements */
-.poem-line .char { display:inline; }

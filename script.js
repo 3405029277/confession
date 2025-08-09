@@ -1,68 +1,66 @@
-// script.js - permanent package: poem typing into .poem-panel and robust lyric sync
+// script.js - per-character typing poem (below center image) + lyrics-synced player
 document.addEventListener('DOMContentLoaded', ()=>{
-  const playBtn = document.getElementById('playBtn');
+  const poemEl = document.getElementById('poem');
   const audio = document.getElementById('audio');
+  const playBtn = document.getElementById('playBtn');
   const lyricsBox = document.getElementById('lyricsBox');
   const lyricsEl = document.getElementById('lyrics');
-  let poemEl = document.getElementById('poem');
 
-  // If poem element missing, create one inside .poem-panel
-  if(!poemEl){
-    const panel = document.querySelector('.poem-panel') || document.body;
-    const newPoem = document.createElement('div');
-    newPoem.id = 'poem';
-    newPoem.className = 'poem';
-    panel.prepend(newPoem);
-    poemEl = newPoem;
-  }
-
+  // Combined poem that weaves in lines from the provided lyrics
   const poemLines = [
-    "月溶寒窗，风拂轻裙，夜色里我思君深。",
-    "一盏孤灯，千行旧字，字字皆为君留痕。",
-    "花落无声，情到深处犹自温存，",
-    "朝朝暮暮，海誓山盟只为君存。",
-    "若问浮生何所依，便是你一笑在眉间。",
-    "若问此心何所向，唯有雨汐，不负此生言。",
-    "此情千回，不改初心；此生一诺，与你为连。",
-    "雨汐——愿以余生，换你片刻温暖；你是我，唯一无二。"
+    "你真的懂“唯一”吗，何处寻得那般定义，",
+    "不是随手的呼吸，而是心底一处温明；",
+    "你真的希望厘清，闭上眼，听见我为你守的誓言，",
+    "若没交心，言语不过风，唯有行动能证明。",
+    "我真的爱你，句句不轻易，眼神里藏着海浪的深情，",
+    "在颠沛流离中，愿与你并肩，哪怕风雨。",
+    "若问此生所依，便是你一笑在眉间；",
+    "若问此心何所向，唯有雨汐，不负此生言。"
   ];
 
-  // typing function: inject into #poem (reserved lines, per-char typing, reveal per line)
-  async function typePoemFixed(lines, perChar=22){
-    if(!poemEl) return;
+  // create reserved lines and per-char spans
+  function preparePoem(lines){
     poemEl.innerHTML = '';
     const lineEls = [];
     for(let i=0;i<lines.length;i++){
-      const lineDiv = document.createElement('div');
-      lineDiv.className = 'poem-line';
-      const inner = document.createElement('span');
-      inner.className = 'poem-inner';
-      lineDiv.appendChild(inner);
-      poemEl.appendChild(lineDiv);
-      lineEls.push({lineDiv, inner});
+      const div = document.createElement('div');
+      div.className = 'poem-line';
+      poemEl.appendChild(div);
+      lineEls.push(div);
     }
+    return lineEls;
+  }
+
+  // per-character typing that reveals one char at a time and keeps gradient
+  async function typePerChar(lines, perChar = 70){
+    const lineContainers = preparePoem(lines);
     for(let i=0;i<lines.length;i++){
       const text = lines[i];
-      const {lineDiv, inner} = lineEls[i];
-      inner.textContent = '';
+      const container = lineContainers[i];
+      // create spans per char
       for(let c=0;c<text.length;c++){
         const ch = document.createElement('span');
-        /* removed char span class to preserve gradient */
         ch.textContent = text[c];
-        inner.appendChild(ch);
+        ch.style.opacity = '0';
+        ch.style.transform = 'translateY(8px)';
+        ch.style.transition = 'opacity .18s ease, transform .18s ease';
+        container.appendChild(ch);
+        // small micro-delay to allow DOM insertion
+        await new Promise(r=>setTimeout(r, 12));
+        requestAnimationFrame(()=>{
+          ch.style.opacity = '1';
+          ch.style.transform = 'translateY(0)';
+        });
         await new Promise(r=>setTimeout(r, perChar));
       }
-      lineDiv.classList.add('visible');
-      await new Promise(r=>setTimeout(r, 360));
+      container.classList.add('visible');
+      await new Promise(r=>setTimeout(r, 320));
     }
   }
 
-  // expose for console debugging
-  window.typePoemFixed = typePoemFixed;
-
-  // music detection
+  // music detection: prefer music.mp3 then .flac
   function detectMusic(){
-    fetch('./music.mp3').then(r=>{ if(r.ok){ audio.src='./music.mp3'; } else { fetch('./music.flac').then(r2=>{ if(r2.ok) audio.src='./music.flac'; }); } }).catch(()=>{});
+    fetch('./music.mp3').then(r=>{ if(r.ok){ audio.src = './music.mp3'; } else { fetch('./music.flac').then(r2=>{ if(r2.ok) audio.src = './music.flac'; }); } }).catch(()=>{});
   }
 
   // parse LRC
@@ -109,12 +107,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }catch(e){ console.warn('no lyrics file'); }
   }
 
-  function centerElementInContainer(el, container){
-    if(!el || !container) return;
-    const top = el.offsetTop - container.clientHeight/2 + el.clientHeight/2;
-    try{ container.scrollTo({ top: top, behavior: 'smooth' }); } catch(e){ container.scrollTop = top; }
-  }
-
+  // lyrics sync helpers
   function findIndexByTime(ms){
     if(!lrcLines || !lrcLines.length) return -1;
     let lo = 0, hi = lrcLines.length - 1, ans = -1;
@@ -124,19 +117,22 @@ document.addEventListener('DOMContentLoaded', ()=>{
     }
     return ans;
   }
+  function centerElement(el, container){
+    if(!el || !container) return;
+    const top = el.offsetTop - container.clientHeight/2 + el.clientHeight/2;
+    try{ container.scrollTo({top, behavior:'smooth', left:0}); container.scrollTop = top; } catch(e){ container.scrollTop = top; }
+  }
 
-  // user scroll pause to prevent fighting user's manual scroll
+  let lastIndex = -1;
   let userInteracted = false, userTimeout = null;
   function attachUserPause(){
     if(!lyricsBox) return;
-    lyricsBox.addEventListener('wheel', ()=>{ userInteracted = true; clearTimeout(userTimeout); userTimeout = setTimeout(()=>userInteracted=false, 6000); }, {passive:true});
-    lyricsBox.addEventListener('touchstart', ()=>{ userInteracted = true; clearTimeout(userTimeout); userTimeout = setTimeout(()=>userInteracted=false, 6000); }, {passive:true});
-    lyricsBox.addEventListener('scroll', ()=>{ userInteracted = true; clearTimeout(userTimeout); userTimeout = setTimeout(()=>userInteracted=false, 6000); }, {passive:true});
+    lyricsBox.addEventListener('wheel', ()=>{ userInteracted=true; clearTimeout(userTimeout); userTimeout=setTimeout(()=>userInteracted=false,6000); }, {passive:true});
+    lyricsBox.addEventListener('touchstart', ()=>{ userInteracted=true; clearTimeout(userTimeout); userTimeout=setTimeout(()=>userInteracted=false,6000); }, {passive:true});
+    lyricsBox.addEventListener('scroll', ()=>{ userInteracted=true; clearTimeout(userTimeout); userTimeout=setTimeout(()=>userInteracted=false,6000); }, {passive:true});
   }
   attachUserPause();
 
-  // lyrics sync
-  let lastIndex = -1;
   audio.addEventListener('timeupdate', ()=>{
     if(!lrcLines || !lrcLines.length) return;
     if(audio.paused) return;
@@ -147,9 +143,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
       lastIndex = idx;
       const nodes = lyricsEl.querySelectorAll('.line');
       nodes.forEach((n,i)=> n.classList.toggle('active', i === idx));
-      if(!userInteracted && nodes[idx]){
-        centerElementInContainer(nodes[idx], lyricsBox);
-      }
+      if(!userInteracted && nodes[idx]) centerElement(nodes[idx], lyricsBox);
     }
   });
 
@@ -164,6 +158,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
   // init
   detectMusic();
   loadLyrics();
-  // start poem typing after small delay so layout settles
-  setTimeout(()=>{ typePoemFixed(poemLines, 22); }, 260);
+  // start typing after small delay so image loads and page feels stable
+  setTimeout(()=>{ typePerChar(poemLines, 70); }, 600);
 });
