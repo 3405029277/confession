@@ -1,52 +1,54 @@
 /* style.css */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&display=swap');
 :root{--accent:#ff79a8;--text:#fff}
-*{box-sizing:border-box;font-family:"Noto Serif SC", Georgia, "Songti SC", serif}
+*{box-sizing:border-box;font-family:"Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif}
 html,body{height:100%;margin:0;background:transparent;color:var(--text)}
 #bg{position:fixed;inset:0;z-index:0;background-image:url('./background.jpg');background-size:cover;background-position:center;filter:none}
 .center{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;position:relative;z-index:3}
 .intro-card{background:transparent;text-align:center;padding:20px;border-radius:12px;color:var(--text);max-width:640px}
-.cover{width:160px;height:160px;border-radius:12px;object-fit:cover;border:3px solid rgba(255,255,255,0.18);box-shadow:0 10px 30px rgba(0,0,0,0.3);margin:0 auto 12px;display:block}
-.name{color:var(--accent);font-weight:700}
-.lead,.tip{color:rgba(255,255,255,0.95)}
+.cover{width:160px;height:160px;border-radius:20px;object-fit:cover;border:3px solid rgba(255,255,255,0.18);box-shadow:0 10px 30px rgba(0,0,0,0.3);margin:0 auto 12px;display:block}
+.name{color:var(--accent);font-weight:800}
+.lead,.tip{color:rgba(255,255,255,0.95);font-weight:600}
 .controls{margin-top:12px}
-.btn{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;background:linear-gradient(90deg,var(--accent),#ff9abb);color:#fff;text-decoration:none;display:inline-block}
+.btn{padding:10px 14px;border-radius:12px;border:0;cursor:pointer;background:linear-gradient(90deg,var(--accent),#ff9abb);color:#fff;text-decoration:none;display:inline-block;font-weight:700}
 .topbar{position:fixed;left:0;right:0;top:12px;display:flex;align-items:center;justify-content:space-between;padding:6px 18px;z-index:5}
-.back{color:#fff;text-decoration:none;font-weight:600}
-.title{color:rgba(255,255,255,0.95);font-weight:700}
+.back{color:#fff;text-decoration:none;font-weight:700}
+.title{color:rgba(255,255,255,0.95);font-weight:800}
 
 /* stage layout */
 .stage{gap:28px;flex-wrap:wrap;max-width:1100px}
 .poem-panel{flex:1;min-width:320px;padding:12px}
 /* Rainbow poem styling */
 .poem {
-  font-size: 34px;
-  font-weight: 800;
-  line-height: 1.6;
-  letter-spacing: 1px;
-  background: linear-gradient(90deg, #ff4d6d 0%, #ff7aa3 18%, #ffd86b 38%, #8ee37a 58%, #6dd3ff 78%, #b98bff 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 40px;
+  font-weight: 900;
+  line-height: 1.5;
+  letter-spacing: 0.6px;
+  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 6px 10px;
-  min-height: 28vh;
-  max-height: 60vh;
-  overflow: visible;
+  min-height: 30vh;
+  padding: 6px 12px;
+  background: linear-gradient(90deg, #ff4d6d 0%, #ff7aa3 18%, #ffd86b 38%, #8ee37a 58%, #6dd3ff 78%, #b98bff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
 }
-.poem-line { width:100%; min-height:1.6em; opacity:0; transform:translateY(6px); }
-.poem-line.visible { opacity:1; transform:translateY(0); transition: opacity 360ms ease, transform 360ms ease; }
+.poem-line { width:100%; min-height:1.6em; opacity:0; transform:translateY(8px); }
+.poem-line.visible { opacity:1; transform:translateY(0); transition:opacity .36s ease, transform .36s ease; }
 .poem-line .char { display:inline-block; }
 
 .player-panel{width:360px;max-width:42%;padding:12px;background:transparent;border-radius:8px}
-.cover.small{width:120px;height:120px;margin-bottom:8px}
+.cover.small{width:120px;height:120px;margin-bottom:8px;border-radius:14px}
 .player-controls{margin:8px 0}
-.lyrics-box{height:300px;overflow:auto;border-radius:8px;padding:8px;background:rgba(0,0,0,0.12);backdrop-filter:blur(2px)}
+.lyrics-box{height:300px;overflow:auto;border-radius:12px;padding:8px;background:rgba(0,0,0,0.12);backdrop-filter:blur(4px)}
 .lyrics{display:flex;flex-direction:column;gap:6px;padding-right:6px}
-.line{padding:8px 6px;color:rgba(255,255,255,0.85);transition:color .18s,transform .18s}
-.line.active{color:var(--accent);font-weight:700;transform:translateX(6px)}
+.line{padding:8px 6px;color:rgba(255,255,255,0.88);transition:color .18s,transform .18s}
+.line.active{color:var(--accent);font-weight:800;transform:translateX(6px)}
 
 /* foot */
 .foot{position:fixed;right:16px;bottom:12px;color:rgba(255,255,255,0.9);z-index:5;font-size:13px}
@@ -56,5 +58,5 @@ html,body{height:100%;margin:0;background:transparent;color:var(--text)}
   .stage{flex-direction:column;align-items:stretch}
   .player-panel{width:100%}
   .lyrics-box{height:220px}
-  .poem{font-size:20px}
+  .poem{font-size:22px;min-height:24vh}
 }

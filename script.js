@@ -1,25 +1,26 @@
-// script.js - love page logic: rainbow poem typing and lyrics sync (centered)
+// script.js - final package: rainbow poem typing and robust lyric sync
 document.addEventListener('DOMContentLoaded', ()=>{
   const playBtn = document.getElementById('playBtn');
   const audio = document.getElementById('audio');
   const lyricsBox = document.getElementById('lyricsBox');
   const lyricsEl = document.getElementById('lyrics');
   const poemEl = document.getElementById('poem');
-  const bg = document.getElementById('bg');
 
-  // Poem - Li Shangyin style, emphasize "唯一"
   const poemLines = [
-    "月色浸帘，心事寄流水。",
-    "千帆过尽，世间皆可更替。",
-    "唯汝一笑，足安我一生。",
-    "雨汐，汝是我唯一。"
+    "月溶寒窗，风拂轻裙，夜色里我思君深。",
+    "一盏孤灯，千行旧字，字字皆为君留痕。",
+    "花落无声，情到深处犹自温存，",
+    "朝朝暮暮，海誓山盟只为君存。",
+    "若问浮生何所依，便是你一笑在眉间。",
+    "若问此心何所向，唯有雨汐，不负此生言。",
+    "此情千回，不改初心；此生一诺，与你为连。",
+    "雨汐——愿以余生，换你片刻温暖；你是我，唯一无二。"
   ];
 
-  // typing: line-by-line with reserved layout (chars appear in spans)
-  async function typePoemFixed(lines, perChar=26){
+  // typing function: reserved lines then type characters, reveal per line
+  async function typePoemFixed(lines, perChar=22){
     if(!poemEl) return;
     poemEl.innerHTML = '';
-    // pre-create line containers to reserve space
     const lineEls = [];
     for(let i=0;i<lines.length;i++){
       const lineDiv = document.createElement('div');
@@ -30,7 +31,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
       poemEl.appendChild(lineDiv);
       lineEls.push({lineDiv, inner});
     }
-    // type into each inner span
     for(let i=0;i<lines.length;i++){
       const text = lines[i];
       const {lineDiv, inner} = lineEls[i];
@@ -42,18 +42,17 @@ document.addEventListener('DOMContentLoaded', ()=>{
         inner.appendChild(ch);
         await new Promise(r=>setTimeout(r, perChar));
       }
-      // reveal line
       lineDiv.classList.add('visible');
-      await new Promise(r=>setTimeout(r, 320));
+      await new Promise(r=>setTimeout(r, 360));
     }
   }
 
-  // Load music automatically if exists
+  // music detection
   function detectMusic(){
     fetch('./music.mp3').then(r=>{ if(r.ok){ audio.src='./music.mp3'; } else { fetch('./music.flac').then(r2=>{ if(r2.ok) audio.src='./music.flac'; }); } }).catch(()=>{});
   }
 
-  // Parse LRC and render
+  // parse lrc
   function parseLRC(text){
     const lines = text.split(/\r?\n/);
     const res = [];
@@ -113,7 +112,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     return ans;
   }
 
-  // user pause on manual scroll
   let userInteracted = false, userTimeout = null;
   function attachUserPause(){
     if(!lyricsBox) return;
@@ -123,7 +121,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
   }
   attachUserPause();
 
-  // sync
   let lastIndex = -1;
   audio.addEventListener('timeupdate', ()=>{
     if(!lrcLines || !lrcLines.length) return;
@@ -152,5 +149,18 @@ document.addEventListener('DOMContentLoaded', ()=>{
   // init
   detectMusic();
   loadLyrics();
-  typePoemFixed(poemLines, 26);
+  // call typing function - if older name exists, it's okay because we reserved the function name typePoemFixed in previous versions
+  if(typeof typePoemFixed === 'function') typePoemFixed(poemLines, 22);
+  else {
+    // fallback simple typing defined here
+    (async ()=>{
+      const el = poemEl;
+      el.innerHTML='';
+      for(const line of poemLines){
+        const d = document.createElement('div'); d.className='poem-line'; const inner = document.createElement('span'); inner.className='poem-inner'; d.appendChild(inner); el.appendChild(d);
+        for(let i=0;i<line.length;i++){ inner.textContent += line[i]; await new Promise(r=>setTimeout(r,22)); }
+        d.classList.add('visible'); await new Promise(r=>setTimeout(r,320));
+      }
+    })();
+  }
 });
